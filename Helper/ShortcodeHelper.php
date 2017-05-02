@@ -41,13 +41,16 @@ class ShortcodeHelper implements HelperInterface
         $atts = (isset($code[2])) ? $code[2] : "";
 
         $options = array();
-        foreach (explode(" ", $atts) as $att) {
+        $atts = str_getcsv(str_replace('&quot;', '"', $atts), '/');
+
+        foreach ($atts as $att) {
             $att = trim($att);
             if (!$att) {
                 continue;
             }
             list($name, $value) = explode('=', $att);
-            $options[trim($name)] = trim($value);
+            $options[trim($name)] = trim($value, '" \t\n\r\0\x0B');
+
         }
 
         return self::$shortcodes[$alias]->parse($options);
